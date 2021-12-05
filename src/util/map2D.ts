@@ -82,7 +82,7 @@ export class Map2D<T> {
         this.originY = y;
       }
       if (xIndex >= this._width) {
-        this._width = xIndex + 1;
+        this._width = xIndex * 2;
       }
 
       // now just copy the data from oldMap
