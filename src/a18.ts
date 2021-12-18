@@ -117,22 +117,20 @@ function magnitude(input: SNumber | number): number {
   }
 }
 
-function clone<T>(input: T): T {
-  return JSON.parse(JSON.stringify(input));
+function parseSNumber(input: string): SNumber {
+  return JSON.parse(input);
 }
 
-const sNumbers: SNumber[] = lines.map((line) => JSON.parse(line));
-
-p(magnitude(clone(sNumbers).reduce(add)));
+p(magnitude(lines.map(parseSNumber).reduce(add)));
 
 let max = 0;
 
-for (let i = 0; i < sNumbers.length; i++) {
-  const a = sNumbers[i];
-  for (let j = i + 1; j < sNumbers.length; j++) {
-    const b = sNumbers[j];
-    max = Math.max(max, magnitude(add(clone(a), clone(b))));
-    max = Math.max(max, magnitude(add(clone(b), clone(a))));
+for (let i = 0; i < lines.length; i++) {
+  const a = lines[i];
+  for (let j = i + 1; j < lines.length; j++) {
+    const b = lines[j];
+    max = Math.max(max, magnitude(add(parseSNumber(a), parseSNumber(b))));
+    max = Math.max(max, magnitude(add(parseSNumber(b), parseSNumber(a))));
   }
 }
 
