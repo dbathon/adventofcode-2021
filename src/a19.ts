@@ -63,18 +63,24 @@ beaconPositionsPerScanner[0].rotatedAndRelToZero = beaconPositionsPerScanner[0].
 beaconPositionsPerScanner[0].offset = [0, 0, 0];
 
 // loop until we have the adjusted positions for each beacon
+const checked = new Set<string>();
 while (beaconPositionsPerScanner.find((p) => p.rotatedAndRelToZero === undefined)) {
-  for (const positions1 of beaconPositionsPerScanner) {
+  for (const [i, positions1] of beaconPositionsPerScanner.entries()) {
     if (!positions1.rotatedAndRelToZero) {
       continue;
     }
     const basePositions1 = positions1.rotatedAndRelToZero;
     const basePositionStrings1 = new Set(basePositions1.map((p) => JSON.stringify(p)));
 
-    for (const positions2 of beaconPositionsPerScanner) {
+    for (const [j, positions2] of beaconPositionsPerScanner.entries()) {
       if (positions2.rotatedAndRelToZero || positions1 === positions2) {
         continue;
       }
+      const checkedKey = i + "," + j;
+      if (checked.has(checkedKey)) {
+        continue;
+      }
+      checked.add(checkedKey);
 
       // find rotations with at least 12 matching points
       matchSearch: for (const rotation of allRotations) {
