@@ -54,6 +54,19 @@ export function intersection<T>(setA: Set<T>, setB: Set<T>): Set<T> {
   return intersection;
 }
 
+export function memoized<Result, Args extends any[]>(fun: (...args: Args) => Result): (...args: Args) => Result {
+  const cache = new Map<string, Result>();
+  return function (...args: Args): Result {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key)!;
+    }
+    const result = fun(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
 export class Heap<T> {
   private data: T[] = [];
   constructor(readonly isABeforeB: (a: T, b: T) => boolean) {}

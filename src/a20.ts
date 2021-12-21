@@ -1,5 +1,5 @@
 import { Map2D } from "./util/map2D";
-import { p, readLines } from "./util/util";
+import { memoized, p, readLines } from "./util/util";
 
 const lines = readLines("input/a20.txt");
 
@@ -15,16 +15,9 @@ for (let y = 1; y < lines.length; y++) {
   }
 }
 
-const cache = new Map<string, boolean>();
-
-function litAfter(x: number, y: number, n: number): boolean {
+const litAfter = memoized(function (x: number, y: number, n: number): boolean {
   if (n <= 0) {
     return map.get(x, y) === "#";
-  }
-  const key = x + "|" + y + "|" + n;
-  const cachedResult = cache.get(key);
-  if (cachedResult !== undefined) {
-    return cachedResult;
   }
   const enhanceIndex = [
     litAfter(x - 1, y - 1, n - 1),
@@ -37,10 +30,9 @@ function litAfter(x: number, y: number, n: number): boolean {
     litAfter(x, y + 1, n - 1),
     litAfter(x + 1, y + 1, n - 1),
   ].reduce((val, bit) => val * 2 + (bit ? 1 : 0), 0);
-  const result = enhancement[enhanceIndex] === "#";
-  cache.set(key, result);
-  return result;
-}
+
+  return enhancement[enhanceIndex] === "#";
+});
 
 function countLitAfter(n: number): number {
   let lit = 0;

@@ -1,4 +1,4 @@
-import { p, readLines } from "./util/util";
+import { memoized, p, readLines } from "./util/util";
 
 const lines = readLines("input/a14.txt");
 
@@ -14,14 +14,7 @@ for (const line of lines) {
 
 const allLetters = [...new Set((start + [...rules.values()].join("")).split(""))];
 
-const cache: Record<string, number | undefined> = {};
-function countAfterSteps(pair: string, letter: string, steps: number): number {
-  const key = pair + "-" + letter + "-" + steps;
-  const cachedResult = cache[key];
-  if (cachedResult !== undefined) {
-    return cachedResult;
-  }
-
+const countAfterSteps = memoized(function (pair: string, letter: string, steps: number): number {
   let result: number;
   const insert = rules.get(pair);
   if (steps <= 0 || !insert) {
@@ -35,9 +28,8 @@ function countAfterSteps(pair: string, letter: string, steps: number): number {
     }
   }
 
-  cache[key] = result;
   return result;
-}
+});
 
 function getCountsAfterSteps(pattern: string, steps: number): Record<string, number> {
   let result: Record<string, number> = {};

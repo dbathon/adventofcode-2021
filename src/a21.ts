@@ -1,4 +1,4 @@
-import { p, readLines } from "./util/util";
+import { memoized, p, readLines } from "./util/util";
 
 const lines = readLines("input/a21.txt");
 
@@ -45,8 +45,14 @@ p(
   })
 );
 
-const cache = new Map<string, [number, number]>();
-function diracWins(pos1: number, pos2: number, rollSum = 0, rollStep = 1, score1 = 0, score2 = 0): [number, number] {
+const diracWins = memoized(function (
+  pos1: number,
+  pos2: number,
+  rollSum = 0,
+  rollStep = 1,
+  score1 = 0,
+  score2 = 0
+): [number, number] {
   if (rollStep > 6) {
     rollStep -= 6;
   }
@@ -55,11 +61,6 @@ function diracWins(pos1: number, pos2: number, rollSum = 0, rollStep = 1, score1
   }
   if (score2 >= 21 && rollStep === 1) {
     return [0, 1];
-  }
-  const key = pos1 + "," + pos2 + "," + rollSum + "," + rollStep + "," + score1 + "," + score2;
-  const cachedResult = cache.get(key);
-  if (cachedResult) {
-    return cachedResult;
   }
   let wins1Sum = 0;
   let wins2Sum = 0;
@@ -88,9 +89,7 @@ function diracWins(pos1: number, pos2: number, rollSum = 0, rollStep = 1, score1
     wins2Sum += wins[1];
   }
 
-  const result: [number, number] = [wins1Sum, wins2Sum];
-  cache.set(key, result);
-  return result;
-}
+  return [wins1Sum, wins2Sum];
+});
 
 p(Math.max(...diracWins(startPositions[0], startPositions[1])));
