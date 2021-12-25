@@ -107,9 +107,7 @@ while (beaconPositionsPerScanner.find((p) => p.rotatedAndRelToZero === undefined
 
 p(
   new Set(
-    beaconPositionsPerScanner
-      .map((positions) => positions.rotatedAndRelToZero!.map((p) => JSON.stringify(p)))
-      .flatMap((positionStrings) => positionStrings)
+    beaconPositionsPerScanner.flatMap((positions) => positions.rotatedAndRelToZero!.map((p) => JSON.stringify(p)))
   ).size
 );
 
